@@ -25,6 +25,8 @@ for i = 1:n
     zD = exp(Ds.p(i)*h);
     zDen(i) = zD;
 end
+
+
 b = RR_poly(zNum,1);
 a = RR_poly(zDen,1);
 ksu =1;
