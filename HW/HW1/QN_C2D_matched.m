@@ -1,20 +1,34 @@
 function [Dz] = QN_C2D_matched(Ds,h,omega)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+% The function transform the continuous time function to discreet time
+% function that taking symbolic variable
+%   Ds: the continuous time transfer function.
+%   h: period of time
+%   omega: rad/s 
+
 m=Ds.num.n; n=Ds.den.n;
 
-for j = 1:m 
-    zN = exp(Ds.z(j)*h);
-%     pregainnum(j) = 1 -zN;
-    zNum(j) = zN;
+for g = 1:m 
+    zN = exp(Ds.z(g)*h);  
+    zNum(g) = zN;
 end
 for i = 1:n
     zD = exp(Ds.p(i)*h);
-%     pregainden(i) = 1 - zD;
     zDen(i) = zD;
 end
-b = RR_poly(zNum);
-a = RR_poly(zDen);
-k = 1;
-Dz = RR_tf(b,a,k);
+b = RR_poly(zNum,1);
+a = RR_poly(zDen,1);
+ksu =1;
+kzu =1;
+ksd =1;
+kzd =1;
+for g =1:m
+    ksu = ksu*(j*omega -Ds.z(g));
+    kzu = kzu*(exp(j*omega*h) - zNum(g));
+end
+for i = 1:n 
+    ksd = ksd*(j*omega-Ds.p(i));
+    kzd = kzd*(exp(j*omega*h) -zDen(i));
+end
+k = (ksu/ksd)/(kzu/kzd);
+Dz = RR_tf(zNum,zDen,k); 
 end
